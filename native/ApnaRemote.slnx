@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="ApnaRemote.Core/ApnaRemote.Core.csproj" />
+  <Project Path="ApnaRemote.Protocol/ApnaRemote.Protocol.csproj" />
+  <Project Path="ApnaRemote.Core.Checks/ApnaRemote.Core.Checks.csproj" />
+  <Project Path="ApnaRemote.Windows/ApnaRemote.Windows.csproj" />
+  <Project Path="ApnaRemote.Viewer/ApnaRemote.Viewer.csproj" />
+</Solution>

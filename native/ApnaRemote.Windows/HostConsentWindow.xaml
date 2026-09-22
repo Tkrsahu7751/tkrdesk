@@ -1,0 +1,30 @@
+<Window x:Class="ApnaRemote.Windows.HostConsentWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="Sharing request" Width="520" SizeToContent="Height" ResizeMode="NoResize"
+ WindowStartupLocation="CenterOwner"
+ Background="{DynamicResource PageBrush}"
+ Foreground="{DynamicResource TextBrush}"
+ TextOptions.TextFormattingMode="Display">
+ <StackPanel Margin="20">
+  <TextBlock Text="Share this PC?" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}"/>
+  <TextBlock x:Name="PeerText" Margin="0,8,0,6" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource TextBrush}"/>
+  <TextBlock Text="Peer name is unverified. Connection uses TLS; approve only people you expect."
+             Foreground="{DynamicResource BannerTextBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,14"/>
+  <Label Content="Screen" Target="{Binding ElementName=MonitorList}" Padding="0,0,0,4" FontSize="12"/>
+  <ListBox x:Name="MonitorList" DisplayMemberPath="Label" MinHeight="72" MaxHeight="160"
+           ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+  <TextBlock Text="Same-PC lab tip: choose the monitor that is not showing the viewer window, or drops and lag will look worse than on two PCs."
+             Foreground="{DynamicResource MutedBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0"/>
+  <CheckBox x:Name="WindowOnly" Content="Use Windows picker (view-only)" Margin="0,12,0,0" Checked="ModeChanged" Unchecked="ModeChanged"/>
+  <CheckBox x:Name="AllowControl" Content="Allow mouse and keyboard" Margin="0,10,0,0"/>
+  <TextBlock Text="View-only is the default. You can revoke or pause while sharing." FontSize="12" TextWrapping="Wrap"
+             Foreground="{DynamicResource MutedBrush}" Margin="0,10,0,14"/>
+  <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+   <Button Content="Stop listening" Click="StopReceivingClicked" Style="{StaticResource SecondaryButton}" MinWidth="110" Margin="0,0,8,0" Padding="12,7"
+           ToolTip="Reject this request and stop LAN receiving"/>
+   <Button Content="Reject" IsCancel="True" Style="{StaticResource SecondaryButton}" MinWidth="80" Margin="0,0,8,0" Padding="12,7"/>
+   <Button x:Name="ShareButton" Content="Share" Click="ShareClicked" Style="{StaticResource PrimaryButton}" MinWidth="90" Padding="12,7"/>
+  </StackPanel>
+ </StackPanel>
+</Window>

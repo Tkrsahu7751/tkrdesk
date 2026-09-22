@@ -1,0 +1,11 @@
+{
+  "active": false,
+  "role": "host",
+  "machine": "DESKTOP-4DU3C4H",
+  "version": "Apna Remote 0.18.0-lab",
+  "csvPath": "C:\\Users\\USER\\AppData\\Local\\ApnaRemote\\metrics\\session-host-DESKTOP-4DU3C4H-20260912-114730.csv",
+  "summaryPath": "C:\\Users\\USER\\AppData\\Local\\ApnaRemote\\metrics\\session-host-DESKTOP-4DU3C4H-20260912-114730.summary.json",
+  "samples": 1139,
+  "updatedUtc": "2026-09-12T06:36:31.8061525\u002B00:00",
+  "folder": "C:\\Users\\USER\\AppData\\Local\\ApnaRemote\\metrics"
+}

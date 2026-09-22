@@ -1,0 +1,28 @@
+{
+  "role": "host",
+  "machine": "DESKTOP-4DU3C4H",
+  "version": "Apna Remote 0.18.0-lab",
+  "startedUtc": "2026-09-12T06:17:30.8057061\u002B00:00",
+  "endedUtc": "2026-09-12T06:36:31.7919210\u002B00:00",
+  "durationSeconds": 1139,
+  "samples": 1139,
+  "fps": {
+    "min": 0,
+    "max": 17,
+    "avg": 11.79
+  },
+  "kbps": {
+    "min": 0,
+    "max": 60005,
+    "avg": 16296.25
+  },
+  "hangSuspectSamples": 0,
+  "lagSuspectSamples": 29,
+  "workingSetMB": {
+    "start": 323.6,
+    "end": 336.5,
+    "max": 354.1
+  },
+  "csvPath": "C:\\Users\\USER\\AppData\\Local\\ApnaRemote\\metrics\\session-host-DESKTOP-4DU3C4H-20260912-114730.csv",
+  "note": "HangSuspect = FPS stuck at 0 for 3\u002B seconds after frames once flowed. LagSuspect = sharp FPS drop. No secrets in this file."
+}

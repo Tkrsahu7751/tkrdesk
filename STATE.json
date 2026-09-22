@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-13",
+  "project": {
+    "name": "Apna Remote",
+    "root": "C:\\Users\\HP\\Documents\\ChatGPT\\Pc remote wifi",
+    "status": "active_lab",
+    "scope": "attended same-LAN Windows host/viewer with Android viewer"
+  },
+  "git": {
+    "branch": "cursor/h264-network-stream",
+    "baseline_head": "7ba35ee600cb9e2cc57dd92a21c0f16c3e20d7fe",
+    "tag_at_baseline": null,
+    "working_tree": "dirty_preserve_existing_changes"
+  },
+  "versions": {
+    "windows": "0.20.6-lab",
+    "android_viewer": "0.17.0",
+    "protocol": "ARL1 revision 4"
+  },
+  "runtime": {
+    "network": "same LAN only",
+    "tcp_port": 5720,
+    "transport": "TLS 1.2/1.3",
+    "media": "JPEG",
+    "h264": "disabled"
+  },
+  "artifacts": {
+    "windows": {
+      "path": "dist/ApnaRemote-TwoPcLab/ApnaRemote.exe",
+      "sha256": "D210633D18C6B8A1E89870F944148182E5DC1FF4534FAF0585C216717923FA55",
+      "release_class": "unsigned_lab"
+    },
+    "android": {
+      "path": "dist/ApnaRemote-Viewer-Android-0.17.0/ApnaRemote.Viewer-0.17.0-arm64-Signed.apk",
+      "sha256": "02CB86AA9858275D30F33E8F44E1B7EC160AE3343128F814FA89ACE529FD95BD",
+      "release_class": "signed_lab"
+    }
+  },
+  "quality": {
+    "latest_automated_result": {
+      "windows_release_build": "0 warnings, 0 errors",
+      "core_checks": "30/30",
+      "discovery_checks": "17/17",
+      "host_lifecycle_checks": "17/17",
+      "viewer_lifecycle_checks": "22/22",
+      "codec_safety": "JPEG allowed; unsupported H.264 refused"
+    },
+    "current_version_two_pc_matrix": "pending",
+    "current_version_30_minute_soak": "pending",
+    "store_or_ov_signed_clean_install": "pending"
+  },
+  "current_milestone": "Prove 0.20.6-lab on two physical PCs before release work",
+  "blockers": [
+    "Current-version two-PC matrix is not recorded",
+    "Current-version 30-minute soak is not recorded",
+    "Microsoft Store identity or OV signing path is not chosen",
+    "Privacy policy does not yet have a stable public HTTPS URL",
+    "Short PIN is not a complete PAKE; fingerprint comparison remains mandatory"
+  ],
+  "next_actions": [
+    "Run the two-PC matrix in both directions using the same 0.20.6-lab Windows build",
+    "Run a 30-minute host/viewer soak and review both metric summaries",
+    "Fix only reproduced failures and rerun the affected checks",
+    "Choose Store signing or an OV certificate after LAN gates pass"
+  ],
+  "canonical_docs": {
+    "human_checkpoint": "CONTINUE-HERE.md",
+    "work_history": "WORKLOG.md",
+    "architecture": "docs/ARCHITECTURE.md",
+    "decisions": "docs/DECISIONS.md",
+    "roadmap": "docs/ROADMAP.md",
+    "testing": "docs/TESTING.md",
+    "user_guide": "docs/USER-GUIDE.md",
+    "release": "docs/RELEASE.md",
+    "privacy": "docs/PRIVACY.md",
+    "maintenance": "docs/PROJECT-MAINTENANCE.md",
+    "native_development": "native/README.md"
+  }
+}

@@ -1,0 +1,1103 @@
+<Window x:Class="ApnaRemote.Windows.MainWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:ctl="clr-namespace:ApnaRemote.Windows.Controls"
+ xmlns:m="clr-namespace:ApnaRemote.Windows.HardwareHub.Models"
+ Title="TKR Desk" Width="1100" Height="700" MinWidth="640" MinHeight="420"
+ WindowStartupLocation="CenterScreen" Background="{DynamicResource PageBrush}"
+ Foreground="{DynamicResource TextBrush}"
+ Icon="pack://application:,,,/Assets/tkrdesk-icon.png"
+ PreviewKeyDown="Window_PreviewKeyDown">
+ <Grid>
+  <!-- One cinematic stage for both light and dark (colours come from the palette) -->
+  <Grid x:Name="Stage" IsHitTestVisible="False" Background="{DynamicResource PageBrush}" CacheMode="BitmapCache">
+   <Rectangle Fill="{DynamicResource StageWashBrush}" Opacity="0.9"/>
+
+   <Ellipse Width="720" Height="560" Margin="-180,-220,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="{DynamicResource StageGlowOpacity}">
+    <Ellipse.Fill>
+     <RadialGradientBrush>
+      <GradientStop Color="#B3176C9E" Offset="0"/>
+      <GradientStop Color="#00176C9E" Offset="1"/>
+     </RadialGradientBrush>
+    </Ellipse.Fill>
+   </Ellipse>
+   <Ellipse Width="640" Height="520" Margin="0,-60,-200,0" HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="{DynamicResource StageGlowOpacity}">
+    <Ellipse.Fill>
+     <RadialGradientBrush>
+      <GradientStop Color="#A012A89A" Offset="0"/>
+      <GradientStop Color="#0012A89A" Offset="1"/>
+     </RadialGradientBrush>
+    </Ellipse.Fill>
+   </Ellipse>
+   <Ellipse Width="520" Height="420" Margin="140,0,0,-160" HorizontalAlignment="Left" VerticalAlignment="Bottom" Opacity="{DynamicResource StageGlowOpacity}">
+    <Ellipse.Fill>
+     <RadialGradientBrush>
+      <GradientStop Color="#8C6D3AD8" Offset="0"/>
+      <GradientStop Color="#006D3AD8" Offset="1"/>
+     </RadialGradientBrush>
+    </Ellipse.Fill>
+   </Ellipse>
+
+   <Rectangle Fill="{StaticResource StageGridBrush}" Opacity="{DynamicResource StageGridOpacity}">
+    <Rectangle.OpacityMask>
+     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+      <GradientStop Color="#00000000" Offset="0"/>
+      <GradientStop Color="#59000000" Offset="0.5"/>
+      <GradientStop Color="#FF000000" Offset="1"/>
+     </LinearGradientBrush>
+    </Rectangle.OpacityMask>
+   </Rectangle>
+
+   <Rectangle Height="220" VerticalAlignment="Bottom" Opacity="{DynamicResource StageHorizonOpacity}">
+    <Rectangle.Fill>
+     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+      <GradientStop Color="#00000000" Offset="0"/>
+      <GradientStop Color="#6622D3EE" Offset="1"/>
+     </LinearGradientBrush>
+    </Rectangle.Fill>
+   </Rectangle>
+
+   <Rectangle Fill="{DynamicResource StageVignetteBrush}"/>
+  </Grid>
+
+  <Grid>
+   <Grid.ColumnDefinitions>
+    <ColumnDefinition Width="Auto"/>
+    <ColumnDefinition Width="*"/>
+   </Grid.ColumnDefinitions>
+
+   <Border x:Name="SidebarChrome" Width="196" Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="0,0,1,0" Padding="14,18"
+           Visibility="{Binding AppChromeVisibility}">
+    <DockPanel>
+     <StackPanel DockPanel.Dock="Top">
+      <Border Background="{DynamicResource GlassTintBrush}" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="1" CornerRadius="14" Padding="10,10" Margin="0,0,0,18">
+       <StackPanel Orientation="Horizontal">
+        <Border Width="34" Height="34" CornerRadius="9" ClipToBounds="True" Margin="0,0,10,0">
+         <Image Source="pack://application:,,,/Assets/tkrdesk-icon.png" Width="34" Height="34" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+        </Border>
+        <StackPanel VerticalAlignment="Center">
+         <TextBlock Text="TKR Desk" Foreground="{DynamicResource TextBrush}" FontSize="14" FontWeight="SemiBold"/>
+         <TextBlock Text="WINDOWS DESKTOP" Foreground="{DynamicResource MutedBrush}" FontSize="9" Margin="0,2,0,0"/>
+        </StackPanel>
+       </StackPanel>
+      </Border>
+      <TextBlock Text="WORKSPACE" Foreground="{DynamicResource MutedBrush}" FontSize="10" Margin="6,0,0,8" FontWeight="SemiBold"/>
+      <Grid Margin="0,2">
+       <Border Background="{DynamicResource NavActiveBrush}" CornerRadius="8" Visibility="{Binding NavOverviewTick}"/>
+       <Border Width="3" Height="16" HorizontalAlignment="Left" Margin="6,0,0,0" CornerRadius="2" Background="{DynamicResource NavTickBrush}" Visibility="{Binding NavOverviewTick}" VerticalAlignment="Center"/>
+       <Button Content="Remote Desktop" Style="{StaticResource NavButton}" Command="{Binding NavigateCommand}" CommandParameter="Overview"/>
+      </Grid>
+      <Grid Margin="0,2">
+       <Border Background="{DynamicResource NavActiveBrush}" CornerRadius="8" Visibility="{Binding NavLabGridTick}"/>
+       <Border Width="3" Height="16" HorizontalAlignment="Left" Margin="6,0,0,0" CornerRadius="2" Background="{DynamicResource NavTickBrush}" Visibility="{Binding NavLabGridTick}" VerticalAlignment="Center"/>
+       <Button Content="Lab Grid (CCTV)" Style="{StaticResource NavButton}" Command="{Binding NavigateCommand}" CommandParameter="LabGrid"/>
+      </Grid>
+      <Grid Margin="0,2">
+       <Border Background="{DynamicResource NavActiveBrush}" CornerRadius="8" Visibility="{Binding NavBroadcastTick}"/>
+       <Border Width="3" Height="16" HorizontalAlignment="Left" Margin="6,0,0,0" CornerRadius="2" Background="{DynamicResource NavTickBrush}" Visibility="{Binding NavBroadcastTick}" VerticalAlignment="Center"/>
+       <Button Content="Screen Broadcast" Style="{StaticResource NavButton}" Command="{Binding NavigateCommand}" CommandParameter="Broadcast"/>
+      </Grid>
+      <Grid Margin="0,2">
+       <Border Background="{DynamicResource NavActiveBrush}" CornerRadius="8" Visibility="{Binding NavFilesTick}"/>
+       <Border Width="3" Height="16" HorizontalAlignment="Left" Margin="6,0,0,0" CornerRadius="2" Background="{DynamicResource NavTickBrush}" Visibility="{Binding NavFilesTick}" VerticalAlignment="Center"/>
+       <Button Content="File Transfer" Style="{StaticResource NavButton}" Command="{Binding NavigateCommand}" CommandParameter="Files"/>
+      </Grid>
+      <Grid Margin="0,2">
+       <Border Background="{DynamicResource NavActiveBrush}" CornerRadius="8" Visibility="{Binding NavDevicesTick}"/>
+       <Border Width="3" Height="16" HorizontalAlignment="Left" Margin="6,0,0,0" CornerRadius="2" Background="{DynamicResource NavTickBrush}" Visibility="{Binding NavDevicesTick}" VerticalAlignment="Center"/>
+       <Button Content="USB Hub" Style="{StaticResource NavButton}" Command="{Binding NavigateCommand}" CommandParameter="Devices"/>
+      </Grid>
+      <Grid Margin="0,2">
+       <Border Background="{DynamicResource NavActiveBrush}" CornerRadius="8" Visibility="{Binding NavHistoryTick}"/>
+       <Border Width="3" Height="16" HorizontalAlignment="Left" Margin="6,0,0,0" CornerRadius="2" Background="{DynamicResource NavTickBrush}" Visibility="{Binding NavHistoryTick}" VerticalAlignment="Center"/>
+       <Button Content="History" Style="{StaticResource NavButton}" Command="{Binding NavigateCommand}" CommandParameter="History"/>
+      </Grid>
+     </StackPanel>
+     <StackPanel DockPanel.Dock="Bottom">
+      <Border Height="1" Background="{DynamicResource LineBrush}" Opacity="0.55" Margin="4,0,4,10"/>
+      <Grid Margin="0,2">
+       <Border Background="{DynamicResource NavActiveBrush}" CornerRadius="8" Visibility="{Binding NavSettingsTick}"/>
+       <Border Width="3" Height="16" HorizontalAlignment="Left" Margin="6,0,0,0" CornerRadius="2" Background="{DynamicResource NavTickBrush}" Visibility="{Binding NavSettingsTick}" VerticalAlignment="Center"/>
+       <Button Content="Settings" Style="{StaticResource NavButton}" Command="{Binding NavigateCommand}" CommandParameter="Settings"/>
+      </Grid>
+      <Grid Margin="0,2">
+       <Border Background="{DynamicResource NavActiveBrush}" CornerRadius="8" Visibility="{Binding NavHelpTick}"/>
+       <Border Width="3" Height="16" HorizontalAlignment="Left" Margin="6,0,0,0" CornerRadius="2" Background="{DynamicResource NavTickBrush}" Visibility="{Binding NavHelpTick}" VerticalAlignment="Center"/>
+       <Button Content="Help" Style="{StaticResource NavButton}" Command="{Binding NavigateCommand}" CommandParameter="Help"/>
+      </Grid>
+      <TextBlock Text="{Binding VersionLabel}" Foreground="{DynamicResource MutedBrush}" FontSize="9" Margin="8,12,0,0" TextWrapping="Wrap"/>
+     </StackPanel>
+     <Border/>
+    </DockPanel>
+   </Border>
+
+   <Grid Grid.Column="1">
+    <Grid.RowDefinitions>
+     <RowDefinition Height="Auto"/>
+     <RowDefinition Height="Auto"/>
+     <RowDefinition Height="*"/>
+     <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <Border Grid.Row="0" MinHeight="48" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1" Padding="20,0"
+            Visibility="{Binding AppChromeVisibility}">
+     <Grid>
+      <TextBlock Text="{Binding Breadcrumb}" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource MutedBrush}"/>
+      <Button Content="{Binding AppearanceCycleLabel}" Command="{Binding ToggleThemeCommand}" HorizontalAlignment="Right" VerticalAlignment="Center"
+              Padding="10,5" FontSize="12" Style="{StaticResource GlassSecondaryButton}"
+              ToolTip="Cycles Light → Dark → Sci-Fi"/>
+     </Grid>
+    </Border>
+
+    <Border Grid.Row="1" Background="{DynamicResource BannerBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1" Padding="20,8"
+            Visibility="{Binding AppChromeVisibility}">
+     <StackPanel>
+      <Border Background="#10B981" CornerRadius="6" Padding="12,6" Margin="0,0,0,8" Visibility="{Binding UpdateBannerVisibility}">
+       <DockPanel LastChildFill="True">
+        <Button DockPanel.Dock="Right" Content="Upgrade Now ⚡" Command="{Binding OpenUpdatePageCommand}" 
+                Background="White" Foreground="#065F46" FontWeight="Bold" Padding="10,3" FontSize="11" BorderThickness="0" Cursor="Hand"/>
+        <TextBlock Text="{Binding UpdateBannerText}" Foreground="White" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Center"/>
+       </DockPanel>
+      </Border>
+      <DockPanel LastChildFill="True">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="12,0,0,0" VerticalAlignment="Center">
+       <Border Background="{Binding SessionBadgeColor}" CornerRadius="4" Padding="8,3" VerticalAlignment="Center" Visibility="{Binding SessionLiveVisibility}">
+        <TextBlock Text="{Binding SessionLiveLabel}" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+       </Border>
+       <Button Content="{Binding ViewerFullscreenLabel}" Command="{Binding ToggleViewerFullscreenCommand}"
+               Visibility="{Binding ViewerActionVisibility}" IsEnabled="{Binding CanToggleViewerFullscreen}"
+               Margin="8,0,0,0" Padding="10,5" Style="{StaticResource GlassSecondaryButton}"
+               ToolTip="F11 — hide sidebar and use the whole screen for the remote display"/>
+       <Button Content="{Binding ViewerEndLabel}" Command="{Binding DisconnectViewerCommand}" Visibility="{Binding ViewerActionVisibility}" Margin="8,0,0,0" Padding="10,5"/>
+       <Button Content="Stop sharing" Command="{Binding StopReceivingCommand}" Visibility="{Binding HostActionVisibility}" Margin="8,0,0,0" Padding="10,5"/>
+      </StackPanel>
+      <StackPanel>
+       <TextBlock Text="{Binding BannerText}" Foreground="{DynamicResource BannerTextBrush}" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap"/>
+       <WrapPanel Visibility="{Binding HostControlVisibility}" Margin="0,6,0,0">
+        <TextBlock Text="{Binding HostControlStatus}" Foreground="{DynamicResource BannerTextBrush}" VerticalAlignment="Center" Margin="0,0,10,0" FontSize="12"/>
+        <Button Content="Revoke" Command="{Binding RevokeControlCommand}" IsEnabled="{Binding CanRevokeControl}" Padding="10,4" Margin="0,0,6,0"/>
+        <Button Content="Pause" Command="{Binding PauseControlCommand}" IsEnabled="{Binding CanPauseControl}" Padding="10,4" Margin="0,0,6,0"/>
+        <Button Content="Allow" Command="{Binding GrantControlCommand}" IsEnabled="{Binding CanGrantControl}" Padding="10,4"/>
+       </WrapPanel>
+      </StackPanel>
+     </DockPanel>
+     </StackPanel>
+    </Border>
+
+    <Grid Grid.Row="2">
+     <!-- Single glass Overview (light + dark are colour packs only) -->
+     <Grid Visibility="{Binding OverviewHomeVisibility}" Margin="28,18,28,22"
+           MaxWidth="1680" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+      <Grid.ColumnDefinitions>
+       <ColumnDefinition Width="1*"/>
+       <ColumnDefinition Width="18"/>
+       <ColumnDefinition Width="1.15*"/>
+      </Grid.ColumnDefinitions>
+
+      <ctl:GlassPanel Backdrop="{Binding ElementName=Stage}" Padding="24"><DockPanel LastChildFill="True">
+       <StackPanel DockPanel.Dock="Top">
+        <TextBlock Text="Connect" FontSize="19" FontWeight="SemiBold"/>
+        <TextBlock Text="Best: Find on Wi‑Fi (same network). Bluetooth is optional. Screen always uses Wi‑Fi TLS. Host must Accept." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,5,0,8" TextWrapping="Wrap"/>
+        <TextBlock Text="1) Other PC: Start sharing · 2) Here: Find nearby · 3) Tap fills IP · 4) Type PIN+FP from host · 5) Connect · 6) Host Accepts" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,0,0,12" TextWrapping="Wrap"/>
+        <DockPanel Margin="0,0,0,10">
+         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+          <Button Content="Find nearby" Command="{Binding StartNearbyScanCommand}" IsEnabled="{Binding CanStartNearbyScan}" Padding="12,5" FontSize="11" Margin="0,0,8,0" Style="{StaticResource GlassSecondaryButton}"
+                  ToolTip="Wi‑Fi find + Bluetooth scan"/>
+          <Button Content="Stop find" Command="{Binding StopNearbyScanCommand}" IsEnabled="{Binding CanStopNearbyScan}" Padding="12,5" FontSize="11" Style="{StaticResource GlassSecondaryButton}"/>
+         </StackPanel>
+         <TextBlock Text="{Binding NearbyScanStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="11" VerticalAlignment="Center" TextWrapping="Wrap"/>
+        </DockPanel>
+        <ItemsControl ItemsSource="{Binding WifiPeers}" Margin="0,0,0,8" Visibility="{Binding WifiPeersVisibility}">
+         <ItemsControl.ItemTemplate>
+          <DataTemplate>
+           <Button Margin="0,0,0,6" Padding="12,8" HorizontalContentAlignment="Left" Style="{StaticResource GlassSecondaryButton}"
+                   Command="{Binding DataContext.UseNearbyPeerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                   CommandParameter="{Binding}">
+            <StackPanel>
+             <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+             <TextBlock Text="{Binding Detail}" FontSize="11" Opacity="0.85"/>
+            </StackPanel>
+           </Button>
+          </DataTemplate>
+         </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{Binding NearbyPeers}" Margin="0,0,0,12" Visibility="{Binding NearbyPeersVisibility}">
+         <ItemsControl.ItemTemplate>
+          <DataTemplate>
+           <Button Margin="0,0,0,6" Padding="12,8" HorizontalContentAlignment="Left" Style="{StaticResource GlassSecondaryButton}"
+                   Command="{Binding DataContext.UseNearbyPeerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                   CommandParameter="{Binding}">
+            <StackPanel>
+             <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+             <TextBlock Text="{Binding Detail}" FontSize="11" Opacity="0.85"/>
+            </StackPanel>
+           </Button>
+          </DataTemplate>
+         </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBlock Text="Host address or 9-digit TKR ID (e.g. 842 195 037)" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,0,0,6"/>
+        <TextBox Style="{StaticResource GlassField}" FontFamily="Consolas" Text="{Binding RemoteAddress, UpdateSourceTrigger=PropertyChanged}" MaxLength="253"/>
+        <ItemsControl ItemsSource="{Binding RecentHosts}" Margin="0,8,0,0" Visibility="{Binding RecentHostsVisibility}">
+         <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+         <ItemsControl.ItemTemplate>
+          <DataTemplate>
+           <Button Content="{Binding}" Command="{Binding DataContext.UseRecentHostCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                   CommandParameter="{Binding}" Margin="0,0,6,5" Padding="10,4" FontSize="11" FontFamily="Consolas"
+                   Style="{StaticResource GlassSecondaryButton}" ToolTip="Fills address only"/>
+          </DataTemplate>
+         </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Grid Margin="0,16,0,0">
+         <Grid.ColumnDefinitions><ColumnDefinition Width="128"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+         <StackPanel>
+          <TextBlock Text="PIN" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,0,0,6"/>
+          <TextBox Style="{StaticResource GlassField}" FontFamily="Consolas" FontSize="19" FontWeight="SemiBold"
+                   Text="{Binding RemotePin, UpdateSourceTrigger=PropertyChanged}" MaxLength="6"/>
+         </StackPanel>
+         <StackPanel Grid.Column="2">
+          <TextBlock Text="Fingerprint" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,0,0,6"/>
+          <TextBox Style="{StaticResource GlassField}" FontFamily="Consolas" FontSize="14"
+                   Text="{Binding RemoteFingerprint, UpdateSourceTrigger=PropertyChanged}" MaxLength="19"
+                   ToolTip="XXXX-XXXX-XXXX-XXXX shown on the host"/>
+         </StackPanel>
+        </Grid>
+        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+         <Button Content="Connect" Command="{Binding ConnectCommand}" IsEnabled="{Binding CanConnect}" Style="{StaticResource GlassPrimaryButton}" Margin="0,0,10,0" Padding="20,9"/>
+         <Button Content="Cancel" Command="{Binding DisconnectViewerCommand}" IsEnabled="{Binding CanDisconnectViewer}" Style="{StaticResource GlassSecondaryButton}" Padding="18,9"/>
+        </StackPanel>
+       </StackPanel>
+       <TextBlock DockPanel.Dock="Bottom" Text="{Binding ViewerStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,12,0,0" VerticalAlignment="Bottom"/>
+      </DockPanel></ctl:GlassPanel>
+
+      <ctl:GlassPanel Grid.Column="2" Backdrop="{Binding ElementName=Stage}" Padding="20"><DockPanel LastChildFill="True">
+       <TextBlock DockPanel.Dock="Bottom" Text="{Binding HostListenStatus}" Foreground="{DynamicResource ShareMutedBrush}" FontSize="11" Margin="0,8,0,0" TextWrapping="Wrap"/>
+       <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,10,0,0">
+        <Button Content="Start sharing" Command="{Binding EnableReceivingCommand}" IsEnabled="{Binding CanEnableReceiving}" Style="{StaticResource GlassPrimaryButton}" Margin="0,0,10,0" Padding="20,9"/>
+        <Button Content="Stop" Command="{Binding StopReceivingCommand}" IsEnabled="{Binding CanStopReceiving}" Style="{StaticResource GlassSecondaryButton}" Padding="18,9"/>
+        <Button Content="Copy phone link" Command="{Binding CopyOfferUriCommand}" IsEnabled="{Binding CanCopyOfferUri}" Padding="12,9" FontSize="11" Margin="10,0,0,0" Style="{StaticResource GlassSecondaryButton}"
+                Visibility="{Binding OfferQrVisibility}"/>
+       </StackPanel>
+       <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                     CanContentScroll="False" Padding="0,0,6,0"
+                     VerticalAlignment="Stretch">
+        <StackPanel Margin="0,0,0,8">
+        <DockPanel Margin="0,0,0,12">
+         <Button DockPanel.Dock="Right" Content="Refresh" Command="{Binding RefreshAddressesCommand}" Padding="12,5" FontSize="11" VerticalAlignment="Top"
+                 Style="{StaticResource GlassSecondaryButton}"/>
+         <StackPanel>
+          <TextBlock Text="Share" FontSize="19" FontWeight="SemiBold" Foreground="{DynamicResource ShareTitleBrush}"/>
+          <TextBlock Text="{Binding ComputerName}" Foreground="{DynamicResource ShareMutedBrush}" FontSize="12" Margin="0,5,0,0"/>
+         </StackPanel>
+        </DockPanel>
+        <TextBlock Text="Your 9-Digit TKR ID" Foreground="{DynamicResource ShareMutedBrush}" FontSize="11"/>
+        <DockPanel Margin="0,4,0,10">
+         <Button DockPanel.Dock="Right" Content="Copy TKR ID" Command="{Binding CopyLocalTkrIdCommand}" Padding="12,5" FontSize="11" Margin="10,0,0,0" VerticalAlignment="Center"
+                 Style="{StaticResource GlassPrimaryButton}"/>
+         <TextBlock Text="{Binding LocalTkrId}" Foreground="#10B981" FontFamily="Consolas" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
+        </DockPanel>
+        <TextBlock Text="Address" Foreground="{DynamicResource ShareMutedBrush}" FontSize="11"/>
+        <DockPanel Margin="0,4,0,4">
+         <Button DockPanel.Dock="Right" Content="Copy" Command="{Binding CopyAddressCommand}" IsEnabled="{Binding CanCopyAddress}" Padding="12,5" FontSize="11" Margin="10,0,0,0" VerticalAlignment="Center"
+                 Style="{StaticResource GlassSecondaryButton}"/>
+         <TextBlock Text="{Binding PrimaryHostAddress}" Foreground="{DynamicResource ShareValueBrush}" FontFamily="Consolas" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center"/>
+        </DockPanel>
+        <TextBlock Text="{Binding HostPortHint}" Foreground="{DynamicResource ShareMutedBrush}" FontSize="11"/>
+
+        <Grid Margin="0,12,0,0" Visibility="{Binding HostSecretsVisibility}">
+         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+         <Border Style="{StaticResource GlassWell}" Padding="10">
+          <StackPanel>
+           <DockPanel>
+            <Button DockPanel.Dock="Right" Content="Copy" Command="{Binding CopyPinCommand}" IsEnabled="{Binding CanCopyPin}" Padding="8,3" FontSize="10" Style="{StaticResource GlassSecondaryButton}"/>
+            <TextBlock Text="PIN" Foreground="{DynamicResource ShareMutedBrush}" FontSize="10" VerticalAlignment="Center"/>
+           </DockPanel>
+           <TextBlock Text="{Binding HostPinText, Mode=OneWay}" Foreground="{DynamicResource ShareValueBrush}" FontFamily="Consolas" FontSize="26" FontWeight="Bold" Margin="0,4,0,0"/>
+          </StackPanel>
+         </Border>
+         <Border Grid.Column="2" Style="{StaticResource GlassWell}" Padding="10">
+          <StackPanel>
+           <DockPanel>
+            <Button DockPanel.Dock="Right" Content="Copy" Command="{Binding CopyFingerprintCommand}" IsEnabled="{Binding CanCopyFingerprint}" Padding="8,3" FontSize="10" Style="{StaticResource GlassSecondaryButton}"/>
+            <TextBlock Text="Fingerprint" Foreground="{DynamicResource ShareMutedBrush}" FontSize="10" VerticalAlignment="Center"/>
+           </DockPanel>
+           <TextBlock Text="{Binding HostFingerprintText, Mode=OneWay}" Foreground="{DynamicResource ShareAccentBrush}" FontFamily="Consolas" FontSize="14" FontWeight="SemiBold" Margin="0,8,0,0" TextWrapping="Wrap"/>
+          </StackPanel>
+         </Border>
+        </Grid>
+        <Border Style="{StaticResource GlassWell}" Margin="0,12,0,0" Visibility="{Binding HostSecretsHintVisibility}">
+         <TextBlock Text="{Binding HostSecretsHint}" Foreground="{DynamicResource ShareMutedBrush}" FontSize="12" TextWrapping="Wrap"/>
+        </Border>
+        <TextBlock Text="{Binding ClipboardStatus}" Foreground="{DynamicResource ShareAccentBrush}" FontSize="11" Margin="0,6,0,0" Visibility="{Binding ClipboardStatusVisibility}"/>
+        <TextBlock Text="{Binding NearbyHostStatus}" Foreground="{DynamicResource ShareMutedBrush}" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"/>
+
+        <!-- Compact QR: always fully inside scroll; copy button also docked with Start/Stop -->
+        <Border Style="{StaticResource GlassWell}" Margin="0,10,0,0" Padding="10" Visibility="{Binding OfferQrVisibility}">
+         <StackPanel Orientation="Horizontal">
+          <Image Source="{Binding OfferQrImage}" Width="96" Height="96" Stretch="Uniform" SnapsToDevicePixels="True" VerticalAlignment="Top"/>
+          <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+           <TextBlock Text="Phone QR" Foreground="{DynamicResource ShareMutedBrush}" FontSize="11" FontWeight="SemiBold"/>
+           <TextBlock Text="Scan with the phone app on the same Wi‑Fi. Host must still Accept." Foreground="{DynamicResource ShareMutedBrush}" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"/>
+          </StackPanel>
+         </StackPanel>
+        </Border>
+
+        <TextBlock Text="{Binding HostStatsText}" Foreground="{DynamicResource ShareMutedBrush}" FontSize="11" Margin="0,10,0,4"/>
+        </StackPanel>
+       </ScrollViewer>
+      </DockPanel></ctl:GlassPanel>
+     </Grid>
+
+     <Border Visibility="{Binding ViewerSessionVisibility}" Background="{DynamicResource TheaterBrush}"
+             CornerRadius="{Binding ViewerSurfaceRadius}" Margin="{Binding ViewerSurfaceMargin}">
+      <Grid>
+       <StackPanel Visibility="{Binding ViewerWaitingVisibility}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="420" Margin="24" IsHitTestVisible="False">
+        <TextBlock Text="{Binding ViewerStageLabel}" Foreground="#A6C4FF" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding ViewerStatus}" Foreground="#CAD7EB" FontSize="13" Margin="0,12,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+       </StackPanel>
+       <Image x:Name="RemoteSurface"
+              Source="{Binding RemoteViewImage}"
+              Stretch="Uniform"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              Margin="0"
+              Focusable="True"
+              Cursor="Cross"
+              MouseMove="RemoteSurface_MouseMove"
+              MouseLeave="RemoteSurface_MouseLeave"
+              MouseDown="RemoteSurface_MouseDown"
+              MouseUp="RemoteSurface_MouseUp"
+              MouseWheel="RemoteSurface_MouseWheel"
+              PreviewKeyDown="RemoteSurface_PreviewKeyDown"
+              PreviewKeyUp="RemoteSurface_PreviewKeyUp"
+              PreviewTextInput="RemoteSurface_PreviewTextInput"
+              GotKeyboardFocus="RemoteSurface_GotKeyboardFocus"
+              LostKeyboardFocus="RemoteSurface_LostKeyboardFocus"
+              LostMouseCapture="RemoteSurface_LostMouseCapture"/>
+       <Border VerticalAlignment="Top" Margin="12" Background="#CC0B1220" CornerRadius="6" Padding="10,7" HorizontalAlignment="Stretch">
+        <DockPanel>
+         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Visibility="{Binding ViewerLiveVisibility}">
+          <Button Content="{Binding ViewerFullscreenLabel}" Command="{Binding ToggleViewerFullscreenCommand}"
+                  Padding="10,4" Margin="0,0,8,0" FontSize="11" Style="{StaticResource GlassSecondaryButton}"/>
+          <Button Content="{Binding ViewerEndLabel}" Command="{Binding DisconnectViewerCommand}" Padding="10,4" FontSize="11"/>
+         </StackPanel>
+         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsHitTestVisible="False" Visibility="{Binding ViewerLiveVisibility}">
+          <Ellipse Width="7" Height="7" Fill="#34D399" Margin="0,0,8,0" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding ViewerStatsText}" Foreground="#E2EAF7" FontSize="12"/>
+         </StackPanel>
+        </DockPanel>
+       </Border>
+       <TextBlock Text="{Binding InputFocusHint}" Foreground="#A6C4FF" FontSize="11" VerticalAlignment="Bottom" Margin="14" TextWrapping="Wrap" IsHitTestVisible="False" Visibility="{Binding ViewerLiveVisibility}"/>
+      </Grid>
+     </Border>
+
+     <ctl:GlassPanel Visibility="{Binding SecondaryGlassVisibility}" Backdrop="{Binding ElementName=Stage}" Margin="12,8" IsHitTestVisible="False"/>
+
+     <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding SecondaryPageVisibility}" Margin="20,14" Background="Transparent">
+      <StackPanel>
+        <TextBlock Text="{Binding PageTitle}" FontSize="20" FontWeight="SemiBold"/>
+        <TextBlock Text="{Binding PageSubtitle}" Foreground="{DynamicResource MutedBrush}" Margin="0,6,0,14" FontSize="12" TextWrapping="Wrap"/>
+        <!-- Lab Grid (CCTV Matrix & Central Lab Monitor) -->
+        <StackPanel Visibility="{Binding LabGridVisibility}">
+         <!-- Quick Lab Announcement Bar -->
+         <Border Style="{StaticResource Card}" Padding="16" Margin="0,0,0,16">
+          <DockPanel LastChildFill="True">
+           <Button DockPanel.Dock="Right" Content="📢 Broadcast Announcement to All" Command="{Binding PromptBroadcastAnnouncementCommand}" Style="{StaticResource GlassPrimaryButton}" Padding="16,8" Margin="10,0,0,0"/>
+           <Button DockPanel.Dock="Right" Content="🔄 Refresh Grid" Command="{Binding RefreshLabGridCommand}" Style="{StaticResource GlassSecondaryButton}" Padding="14,8" Margin="10,0,0,0"/>
+           <StackPanel VerticalAlignment="Center">
+            <TextBlock Text="Lab-Wide Announcement / Alert Broadcast" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
+            <TextBox Style="{StaticResource GlassField}" Text="{Binding LabNoticeText, UpdateSourceTrigger=PropertyChanged}" FontFamily="Segoe UI" FontSize="13" Padding="8,6"/>
+           </StackPanel>
+          </DockPanel>
+         </Border>
+
+         <!-- Empty State -->
+         <Border Style="{StaticResource Card}" Padding="30" Margin="0,0,0,16" Visibility="{Binding LabGridEmptyVisibility}" HorizontalAlignment="Stretch">
+          <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+           <TextBlock Text="🔍 Scanning for Lab Workstations..." FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,6"/>
+           <TextBlock Text="Make sure student / lab computers have TKR Desk open on the same Wi-Fi / Local Area Network." Foreground="{DynamicResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/>
+          </StackPanel>
+         </Border>
+
+         <!-- CCTV Matrix Cards ItemsControl -->
+         <ItemsControl ItemsSource="{Binding LabGridWorkstations}">
+          <ItemsControl.ItemsPanel>
+           <ItemsPanelTemplate>
+            <WrapPanel Orientation="Horizontal"/>
+           </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+           <DataTemplate>
+            <Border Width="260" MinHeight="170" Style="{StaticResource Card}" Padding="14" Margin="0,0,14,14" Background="{DynamicResource SurfaceBrush}">
+             <DockPanel LastChildFill="True">
+              <!-- Top bar: Hostname + Online Dot -->
+              <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+               <Border DockPanel.Dock="Right" Background="{Binding BadgeColor}" Width="10" Height="10" CornerRadius="5" VerticalAlignment="Center"/>
+               <TextBlock Text="{Binding HostName}" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource TextBrush}" TextTrimming="CharacterEllipsis"/>
+              </DockPanel>
+
+              <!-- Connect Button at Bottom -->
+              <Button DockPanel.Dock="Bottom" Content="⚡ Connect &amp; Takeover" Command="{Binding DataContext.ConnectLabPcCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Style="{StaticResource GlassPrimaryButton}" Padding="10,6" Margin="0,12,0,0"/>
+
+              <!-- Middle: TKR ID and IP info -->
+              <StackPanel VerticalAlignment="Center">
+               <TextBlock Text="TKR ID" Foreground="{DynamicResource MutedBrush}" FontSize="10"/>
+               <TextBlock Text="{Binding TkrId}" FontFamily="Consolas" FontSize="16" FontWeight="Bold" Foreground="#10B981" Margin="0,2,0,6"/>
+               <TextBlock Text="{Binding DisplaySubtitle}" Foreground="{DynamicResource MutedBrush}" FontSize="11"/>
+               <TextBlock Text="{Binding StatusText}" Foreground="{DynamicResource TextBrush}" FontSize="11" Margin="0,4,0,0"/>
+              </StackPanel>
+             </DockPanel>
+            </Border>
+           </DataTemplate>
+          </ItemsControl.ItemTemplate>
+         </ItemsControl>
+        </StackPanel>
+
+        <!-- Screen Broadcast (1-to-Hundreds Presentation Mode) -->
+        <StackPanel Visibility="{Binding BroadcastVisibility}">
+         <!-- Teacher/Presenter Controls -->
+         <Border Style="{StaticResource Card}" Padding="18" Margin="0,0,0,16">
+          <StackPanel>
+           <TextBlock Text="Teacher / Presenter Broadcasting" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+           <TextBlock Text="Stream your screen over UDP Multicast to hundreds of student PCs with ZERO server lag." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,12"/>
+           <Grid Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+             <ColumnDefinition Width="*"/>
+             <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Style="{StaticResource GlassField}" Text="{Binding BroadcastTitle, UpdateSourceTrigger=PropertyChanged}" FontSize="13" Padding="8,6" Margin="0,0,12,0"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+             <Button Content="▶ Start Live Broadcast" Command="{Binding StartBroadcastCommand}" Visibility="{Binding BroadcastStartBtnVisibility}" Style="{StaticResource GlassPrimaryButton}" Padding="18,8" Margin="0,0,8,0"/>
+             <Button Content="⏹ Stop Broadcast" Command="{Binding StopBroadcastCommand}" Visibility="{Binding BroadcastStopBtnVisibility}" Style="{StaticResource GlassSecondaryButton}" Padding="18,8"/>
+            </StackPanel>
+           </Grid>
+           <TextBlock Text="{Binding BroadcastStatus}" Foreground="{DynamicResource ShareAccentBrush}" FontSize="12" FontWeight="SemiBold"/>
+          </StackPanel>
+         </Border>
+
+         <!-- Student / Attendee Live Streams -->
+         <Border Style="{StaticResource Card}" Padding="18" Margin="0,0,0,16">
+          <StackPanel>
+           <TextBlock Text="Available Classroom Presentations on Wi-Fi" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+           <TextBlock Text="{Binding ViewerBroadcastStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,12"/>
+
+           <Border Style="{StaticResource GlassWell}" Padding="20" Visibility="{Binding BroadcastChannelsEmptyVisibility}">
+            <TextBlock Text="No active broadcasts found on this Wi-Fi. When a presenter starts broadcasting, it appears here automatically." Foreground="{DynamicResource MutedBrush}" FontSize="12" HorizontalAlignment="Center"/>
+           </Border>
+
+           <ItemsControl ItemsSource="{Binding BroadcastChannels}">
+            <ItemsControl.ItemTemplate>
+             <DataTemplate>
+              <Border Style="{StaticResource GlassWell}" Padding="12" Margin="0,0,0,8">
+               <DockPanel LastChildFill="True">
+                <Button DockPanel.Dock="Right" Content="Join Broadcast 📺" Command="{Binding DataContext.JoinBroadcastCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Style="{StaticResource GlassPrimaryButton}" Padding="14,6" Margin="10,0,0,0"/>
+                <StackPanel VerticalAlignment="Center">
+                 <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="Bold"/>
+                 <TextBlock Text="{Binding DisplayDetail}" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,2,0,0"/>
+                </StackPanel>
+               </DockPanel>
+              </Border>
+             </DataTemplate>
+            </ItemsControl.ItemTemplate>
+           </ItemsControl>
+          </StackPanel>
+         </Border>
+        </StackPanel>
+
+        <!-- Direct PC-to-PC File Transfer -->
+        <StackPanel Visibility="{Binding FilesVisibility}">
+         <Border Style="{StaticResource Card}" Padding="18" Margin="0,0,0,16">
+          <StackPanel>
+           <TextBlock Text="Fast Wireless File Transfer" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+           <TextBlock Text="Send gigabytes of files, documents, and videos directly over Wi-Fi without internet or flash drives." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,14"/>
+
+           <Grid Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+             <ColumnDefinition Width="*"/>
+             <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Margin="0,0,12,0">
+             <TextBlock Text="Destination Host IP or 9-digit TKR ID (e.g. 842 195 037)" FontSize="11" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+             <TextBox Style="{StaticResource GlassField}" FontFamily="Consolas" FontSize="14" Text="{Binding FileTransferTargetAddress, UpdateSourceTrigger=PropertyChanged}" Padding="8,6"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+             <Button Content="📁 Pick &amp; Send File" Command="{Binding PickAndSendFileCommand}" Style="{StaticResource GlassPrimaryButton}" Padding="18,8" Margin="0,0,8,0"/>
+             <Button Content="📂 Open Received Files" Command="{Binding OpenTransfersFolderCommand}" Style="{StaticResource GlassSecondaryButton}" Padding="14,8"/>
+            </StackPanel>
+           </Grid>
+
+           <!-- Transfer Progress Bar -->
+           <StackPanel Margin="0,8,0,0" Visibility="{Binding FileTransferProgressVisibility}">
+            <ProgressBar Value="{Binding FileTransferProgress}" Maximum="100" Height="10" Margin="0,0,0,6" Foreground="#10B981"/>
+           </StackPanel>
+
+           <TextBlock Text="{Binding FileTransferStatus}" Foreground="{DynamicResource ShareAccentBrush}" FontSize="12" FontWeight="SemiBold" Margin="0,4,0,0"/>
+           <TextBlock Text="💡 Received files are saved automatically in Downloads\TKRDesk-Transfers with SHA-256 verification." Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,10,0,0"/>
+          </StackPanel>
+         </Border>
+        </StackPanel>
+
+        <!-- Hardware & Office Device Hub (Modes C, D, E) -->
+        <StackPanel Visibility="{Binding EmptyVisibility}">
+         <!-- Sub-tab Selector -->
+         <Border Style="{StaticResource Card}" Padding="8" Margin="0,0,0,14">
+          <StackPanel Orientation="Horizontal">
+           <Button Content="{Binding QueueTabButtonText}" Command="{Binding SelectHardwareTabCommand}" CommandParameter="Queue" Style="{StaticResource GlassSecondaryButton}" Margin="0,0,8,0" Padding="14,8"/>
+           <Button Content="{Binding PenDriveTabButtonText}" Command="{Binding SelectHardwareTabCommand}" CommandParameter="PenDrive" Style="{StaticResource GlassSecondaryButton}" Margin="0,0,8,0" Padding="14,8"/>
+           <Button Content="{Binding UsbTabButtonText}" Command="{Binding SelectHardwareTabCommand}" CommandParameter="Usb" Style="{StaticResource GlassSecondaryButton}" Padding="14,8"/>
+          </StackPanel>
+         </Border>
+
+         <!-- SUB-TAB 1: SMART OFFICE QUEUE (MODE D) -->
+         <StackPanel Visibility="{Binding QueueTabVisibility}">
+          <!-- Host Card -->
+          <Border Style="{StaticResource Card}" Padding="16" Margin="0,0,0,14">
+           <StackPanel>
+            <DockPanel Margin="0,0,0,10">
+             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+              <Button Content="Start Queue Server" Command="{Binding StartQueueServerCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0" Padding="12,6"/>
+              <Button Content="Stop Server" Command="{Binding StopQueueServerCommand}" Style="{StaticResource SecondaryButton}" Padding="12,6"/>
+             </StackPanel>
+             <TextBlock Text="🖨️ Office Shared Device Host (This PC)" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            </DockPanel>
+            <TextBlock Text="{Binding QueueServerStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,10"/>
+
+             <Grid Margin="0,0,0,10">
+              <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*"/>
+               <ColumnDefinition Width="12"/>
+               <ColumnDefinition Width="160"/>
+              </Grid.ColumnDefinitions>
+              <StackPanel Grid.Column="0">
+               <TextBlock Text="Office Hardware Label" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+               <TextBox Text="{Binding QueueDeviceName, UpdateSourceTrigger=PropertyChanged}"/>
+              </StackPanel>
+              <StackPanel Grid.Column="2">
+               <TextBlock Text="Hardware Category" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+               <ComboBox SelectedItem="{Binding QueueDeviceCategory}">
+                <ComboBox.ItemsSource>
+                 <x:Array Type="{x:Type m:DeviceCategory}">
+                  <m:DeviceCategory>Printer</m:DeviceCategory>
+                  <m:DeviceCategory>Scanner</m:DeviceCategory>
+                  <m:DeviceCategory>PlotterOrCutter</m:DeviceCategory>
+                  <m:DeviceCategory>Other</m:DeviceCategory>
+                 </x:Array>
+                </ComboBox.ItemsSource>
+               </ComboBox>
+              </StackPanel>
+             </Grid>
+
+             <!-- Installed Printers on This PC (Selection & Sharing) -->
+             <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,10">
+              <StackPanel>
+               <DockPanel Margin="0,0,0,8">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                 <Button Content="Select All" Command="{Binding SelectAllPrintersCommand}" Style="{StaticResource GlassSecondaryButton}" Padding="8,3" Margin="0,0,6,0" FontSize="11"/>
+                 <Button Content="Deselect All" Command="{Binding DeselectAllPrintersCommand}" Style="{StaticResource GlassSecondaryButton}" Padding="8,3" Margin="0,0,6,0" FontSize="11"/>
+                 <Button Content="🔄 Refresh" Command="{Binding RefreshPrintersCommand}" Style="{StaticResource GlassSecondaryButton}" Padding="8,3" FontSize="11"/>
+                </StackPanel>
+                <TextBlock Text="Installed Windows Printers (Check to Share on LAN):" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center"/>
+               </DockPanel>
+
+               <ItemsControl ItemsSource="{Binding AvailablePrinters}">
+                <ItemsControl.ItemTemplate>
+                 <DataTemplate>
+                  <Border BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1" Padding="0,4">
+                   <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding DisplayText}" FontSize="12" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center"/>
+                  </Border>
+                 </DataTemplate>
+                </ItemsControl.ItemTemplate>
+               </ItemsControl>
+              </StackPanel>
+             </Border>
+
+            <!-- Active Job Banner -->
+            <Border Background="{DynamicResource NavActiveBrush}" CornerRadius="8" Padding="12,8" Margin="0,0,0,10">
+             <DockPanel>
+              <Button DockPanel.Dock="Right" Content="Clear Finished" Command="{Binding ClearQueueFinishedCommand}" Style="{StaticResource GlassSecondaryButton}" Padding="10,4"/>
+              <TextBlock Text="{Binding QueueHostActiveJobText}" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center"/>
+             </DockPanel>
+            </Border>
+
+            <!-- Jobs List -->
+            <TextBlock Text="Live Jobs Queue:" FontSize="13" FontWeight="SemiBold" Margin="0,4,0,6"/>
+            <ItemsControl ItemsSource="{Binding QueueHostJobs}">
+             <ItemsControl.ItemTemplate>
+              <DataTemplate>
+               <Border BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1" Padding="0,6">
+                <DockPanel>
+                 <TextBlock DockPanel.Dock="Right" Text="{Binding StatusBadge}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center"/>
+                 <TextBlock Text="{Binding DisplaySummary}" FontSize="12" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center"/>
+                </DockPanel>
+               </Border>
+              </DataTemplate>
+             </ItemsControl.ItemTemplate>
+            </ItemsControl>
+           </StackPanel>
+          </Border>
+
+          <!-- Client Card -->
+          <Border Style="{StaticResource Card}" Padding="16">
+           <StackPanel>
+            <TextBlock Text="📤 Submit Job to Office Hardware" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <TextBlock Text="Connect to any office PC running the Queue Server to queue your print, scan, or cut job without collisions." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,10"/>
+
+            <!-- LAN Discovery Bar -->
+            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="10,8" Margin="0,0,0,10">
+             <StackPanel>
+              <DockPanel>
+               <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Content="🔍 Scan LAN" Command="{Binding ScanHubsCommand}" Style="{StaticResource PrimaryButton}" Padding="10,4" Margin="0,0,6,0" FontSize="11"/>
+                <Button Content="This PC (127.0.0.1)" Command="{Binding AutoFillHostIpCommand}" CommandParameter="127.0.0.1" Style="{StaticResource GlassSecondaryButton}" Padding="8,4" FontSize="11"/>
+               </StackPanel>
+               <TextBlock Text="{Binding HubScanStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="11" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+              </DockPanel>
+              <ItemsControl ItemsSource="{Binding DiscoveredHubs}" Visibility="{Binding DiscoveredHubsVisibility}" Margin="0,6,0,0">
+               <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                 <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+               </ItemsControl.ItemsPanel>
+               <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                 <Button Content="{Binding DisplayText}" Command="{Binding DataContext.AutoFillHostIpCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Style="{StaticResource GlassSecondaryButton}" Padding="8,3" Margin="0,0,6,4" FontSize="11"/>
+                </DataTemplate>
+               </ItemsControl.ItemTemplate>
+              </ItemsControl>
+             </StackPanel>
+            </Border>
+
+            <!-- Client Target Printer Selector (Auto-selects if 1 printer, dropdown if multiple) -->
+            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="10,8" Margin="0,0,0,10">
+             <DockPanel>
+              <ComboBox DockPanel.Dock="Right" ItemsSource="{Binding ClientAvailablePrinters}" SelectedItem="{Binding SelectedClientPrinter}" Visibility="{Binding ClientPrinterSelectorVisibility}" MinWidth="180" VerticalAlignment="Center"/>
+              <TextBlock Text="{Binding ClientPrinterSummaryText}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center"/>
+             </DockPanel>
+            </Border>
+
+            <!-- Windows Native Ctrl+P Integration Banner -->
+            <Border Background="{DynamicResource NavActiveBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,10">
+             <DockPanel>
+              <Button DockPanel.Dock="Right" Content="Install / Fix Printer" Command="{Binding InstallVirtualPrinterCommand}" Style="{StaticResource GlassSecondaryButton}" Padding="10,5" FontSize="11" VerticalAlignment="Center"/>
+              <StackPanel VerticalAlignment="Center">
+               <TextBlock Text="{Binding VirtualPrinterStatusText}" FontWeight="SemiBold" FontSize="13"/>
+               <TextBlock Text="💡 Pro Tip: Press Ctrl + P anywhere (Chrome, MS Word, Adobe Acrobat, Excel, Tally) and pick 'TKR Desk Printer' to print directly!" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"/>
+              </StackPanel>
+             </DockPanel>
+            </Border>
+
+            <!-- Server IP & Document Chooser (Real PDF/Document) -->
+            <Grid Margin="0,0,0,10">
+             <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="180"/>
+              <ColumnDefinition Width="12"/>
+              <ColumnDefinition Width="*"/>
+             </Grid.ColumnDefinitions>
+             <StackPanel Grid.Column="0">
+              <TextBlock Text="Host Server IP" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+              <TextBox Text="{Binding QueueClientServerIp, UpdateSourceTrigger=PropertyChanged}"/>
+             </StackPanel>
+             <StackPanel Grid.Column="2">
+              <TextBlock Text="Select Document / PDF to Print" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+              <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" CornerRadius="6" Padding="6,4">
+               <DockPanel>
+                <Button DockPanel.Dock="Right" Content="📁 Browse PDF…" Command="{Binding BrowseDocumentCommand}" Style="{StaticResource GlassSecondaryButton}" Padding="10,4" FontSize="11"/>
+                <Button DockPanel.Dock="Right" Content="✖" Command="{Binding ClearSelectedDocumentCommand}" Visibility="{Binding SelectedDocumentBadgeVisibility}" Style="{StaticResource GlassSecondaryButton}" Padding="6,2" Margin="0,0,6,0" FontSize="10"/>
+                <TextBlock Text="{Binding SelectedDocumentName}" Visibility="{Binding SelectedDocumentBadgeVisibility}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" Margin="4,0,6,0" TextTrimming="CharacterEllipsis"/>
+                <TextBlock Text="{Binding SelectedDocumentSizeText}" Visibility="{Binding SelectedDocumentBadgeVisibility}" Foreground="{DynamicResource MutedBrush}" FontSize="11" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBlock Text="No file chosen. Click Browse PDF to select a document." Visibility="{Binding HasNoSelectedDocumentVisibility}" Foreground="{DynamicResource MutedBrush}" FontSize="12" VerticalAlignment="Center" Margin="4,0,0,0"/>
+               </DockPanel>
+              </Border>
+             </StackPanel>
+            </Grid>
+
+             <!-- Paper Size & Pages to Print -->
+            <Grid Margin="0,0,0,10">
+             <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="180"/>
+              <ColumnDefinition Width="12"/>
+              <ColumnDefinition Width="180"/>
+              <ColumnDefinition Width="12"/>
+              <ColumnDefinition Width="*"/>
+             </Grid.ColumnDefinitions>
+             <StackPanel Grid.Column="0">
+              <TextBlock Text="Paper Size" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+              <ComboBox ItemsSource="{Binding PaperSizeOptions}" SelectedItem="{Binding SelectedPaperSize}"/>
+             </StackPanel>
+             <StackPanel Grid.Column="2">
+              <TextBlock Text="Pages to Print (e.g. All, 1-3, 1,3)" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+              <TextBox Text="{Binding PrintPageRange, UpdateSourceTrigger=PropertyChanged}"/>
+             </StackPanel>
+             <StackPanel Grid.Column="4" VerticalAlignment="Bottom" Margin="0,0,0,6">
+              <TextBlock Text="💡 Page range applies to multi-page PDFs. Size sets paper layout." FontSize="11" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
+             </StackPanel>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+             <Button Content="🖨️ Send Print Job" Command="{Binding SubmitQueueJobCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0" Padding="14,8"/>
+             <Button Content="Refresh Queue Status" Command="{Binding RefreshQueueStatusCommand}" Style="{StaticResource GlassSecondaryButton}" Margin="0,0,8,0" Padding="12,8"/>
+             <Button Content="Cancel My Job" Command="{Binding CancelClientJobCommand}" IsEnabled="{Binding CanCancelClientJob}" Style="{StaticResource SecondaryButton}" Padding="12,8"/>
+            </StackPanel>
+
+            <!-- Status Display -->
+            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="12,10">
+             <StackPanel>
+              <TextBlock Text="{Binding QueueClientMessage}" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,4"/>
+              <TextBlock Text="{Binding QueueClientPositionText}" FontSize="12" Foreground="{DynamicResource TextBrush}" Margin="0,0,0,2"/>
+              <TextBlock Text="{Binding QueueClientWaitText}" FontSize="12" Foreground="{DynamicResource MutedBrush}"/>
+             </StackPanel>
+            </Border>
+
+            <!-- Live Server Print Queue for Client -->
+            <StackPanel Visibility="{Binding QueueClientJobsVisibility}" Margin="0,12,0,0">
+             <TextBlock Text="Live Server Print Queue:" FontSize="13" FontWeight="SemiBold" Margin="0,4,0,6"/>
+             <ItemsControl ItemsSource="{Binding QueueClientJobs}">
+              <ItemsControl.ItemTemplate>
+               <DataTemplate>
+                <Border BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1" Padding="0,6">
+                 <DockPanel>
+                  <TextBlock DockPanel.Dock="Right" Text="{Binding StatusBadge}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center"/>
+                  <TextBlock Text="{Binding DisplaySummary}" FontSize="12" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center"/>
+                 </DockPanel>
+                </Border>
+               </DataTemplate>
+              </ItemsControl.ItemTemplate>
+             </ItemsControl>
+            </StackPanel>
+           </StackPanel>
+          </Border>
+         </StackPanel>
+
+         <!-- SUB-TAB 2: PEN DRIVE BROADCASTER (MODE E) -->
+         <StackPanel Visibility="{Binding PenDriveTabVisibility}">
+          <!-- Host Card -->
+          <Border Style="{StaticResource Card}" Padding="16" Margin="0,0,0,14">
+           <StackPanel>
+            <DockPanel Margin="0,0,0,10">
+             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+              <Button Content="Refresh Drives" Command="{Binding RefreshPenDrivesCommand}" Style="{StaticResource GlassSecondaryButton}" Margin="0,0,8,0" Padding="10,6"/>
+              <Button Content="Start Broadcast" Command="{Binding StartPenDriveServerCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0" Padding="12,6"/>
+              <Button Content="Stop Broadcast" Command="{Binding StopPenDriveServerCommand}" Style="{StaticResource SecondaryButton}" Padding="12,6"/>
+             </StackPanel>
+             <TextBlock Text="💾 USB Pen Drive Host (This PC)" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            </DockPanel>
+            <TextBlock Text="{Binding PenDriveServerStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,10"/>
+
+            <Grid Margin="0,0,0,10">
+             <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="2*"/>
+              <ColumnDefinition Width="12"/>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="12"/>
+              <ColumnDefinition Width="Auto"/>
+             </Grid.ColumnDefinitions>
+             <StackPanel Grid.Column="0">
+              <TextBlock Text="Detected USB Removable Drive" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+              <ComboBox ItemsSource="{Binding AvailablePenDrives}" SelectedItem="{Binding SelectedPenDrive}" DisplayMemberPath="DisplayName"/>
+             </StackPanel>
+             <StackPanel Grid.Column="2">
+              <TextBlock Text="4-Digit Access PIN" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+              <TextBox Text="{Binding PenDrivePin, UpdateSourceTrigger=PropertyChanged}"/>
+             </StackPanel>
+             <StackPanel Grid.Column="4" VerticalAlignment="Bottom" Margin="0,0,0,6">
+              <CheckBox Content="Read-Only Mode" IsChecked="{Binding PenDriveReadOnly}"/>
+             </StackPanel>
+            </Grid>
+
+            <!-- Allowed PCs / Whitelist -->
+            <TextBlock Text="Allowed Office PCs (Access Whitelist):" FontSize="13" FontWeight="SemiBold" Margin="0,6,0,6"/>
+            <ItemsControl ItemsSource="{Binding PenDriveAllowedClients}">
+             <ItemsControl.ItemTemplate>
+              <DataTemplate>
+               <Border BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1" Padding="0,6">
+                <DockPanel>
+                 <Button DockPanel.Dock="Right" Content="Toggle Allow/Block" Command="{Binding DataContext.ToggleClientAllowedCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Style="{StaticResource GlassSecondaryButton}" Padding="8,3" FontSize="11"/>
+                 <TextBlock Text="{Binding DisplayText}" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                 <TextBlock Text="{Binding StatusBadge}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center"/>
+                </DockPanel>
+               </Border>
+              </DataTemplate>
+             </ItemsControl.ItemTemplate>
+            </ItemsControl>
+           </StackPanel>
+          </Border>
+
+          <!-- Client Card -->
+          <Border Style="{StaticResource Card}" Padding="16">
+           <StackPanel>
+            <TextBlock Text="📂 Access Shared Pen Drive on LAN" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <TextBlock Text="Browse, view, and high-speed download files from any PC's plugged-in USB pen drive." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,10"/>
+
+            <!-- LAN Discovery Bar -->
+            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="10,8" Margin="0,0,0,10">
+             <StackPanel>
+              <DockPanel>
+               <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Content="🔍 Scan LAN" Command="{Binding ScanHubsCommand}" Style="{StaticResource PrimaryButton}" Padding="10,4" Margin="0,0,6,0" FontSize="11"/>
+                <Button Content="This PC (127.0.0.1)" Command="{Binding AutoFillHostIpCommand}" CommandParameter="127.0.0.1" Style="{StaticResource GlassSecondaryButton}" Padding="8,4" FontSize="11"/>
+               </StackPanel>
+               <TextBlock Text="{Binding HubScanStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="11" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+              </DockPanel>
+              <ItemsControl ItemsSource="{Binding DiscoveredHubs}" Visibility="{Binding DiscoveredHubsVisibility}" Margin="0,6,0,0">
+               <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                 <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+               </ItemsControl.ItemsPanel>
+               <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                 <Button Content="{Binding DisplayText}" Command="{Binding DataContext.AutoFillHostIpCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Style="{StaticResource GlassSecondaryButton}" Padding="8,3" Margin="0,0,6,4" FontSize="11"/>
+                </DataTemplate>
+               </ItemsControl.ItemTemplate>
+              </ItemsControl>
+             </StackPanel>
+            </Border>
+
+            <Grid Margin="0,0,0,10">
+             <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="12"/>
+              <ColumnDefinition Width="100"/>
+              <ColumnDefinition Width="12"/>
+              <ColumnDefinition Width="Auto"/>
+             </Grid.ColumnDefinitions>
+             <StackPanel Grid.Column="0">
+              <TextBlock Text="Host PC IP Address" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+              <TextBox Text="{Binding PenDriveClientHostIp, UpdateSourceTrigger=PropertyChanged}"/>
+             </StackPanel>
+             <StackPanel Grid.Column="2">
+              <TextBlock Text="Security PIN" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+              <TextBox Text="{Binding PenDriveClientPin, UpdateSourceTrigger=PropertyChanged}"/>
+             </StackPanel>
+             <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Bottom">
+              <Button Content="Connect &amp; Unlock" Command="{Binding ConnectPenDriveClientCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,6,0" Padding="12,8"/>
+              <Button Content="Disconnect" Command="{Binding DisconnectPenDriveClientCommand}" Style="{StaticResource SecondaryButton}" Padding="10,8"/>
+             </StackPanel>
+            </Grid>
+
+            <TextBlock Text="{Binding PenDriveClientStatusText}" Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,8"/>
+
+            <!-- Folder Navigation Bar -->
+            <Border Background="{DynamicResource NavActiveBrush}" CornerRadius="8" Padding="10,6" Margin="0,0,0,8">
+             <DockPanel>
+              <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+               <Button Content="⬆ Up Folder" Command="{Binding PenDriveNavigateUpCommand}" Style="{StaticResource GlassSecondaryButton}" Margin="0,0,6,0" Padding="8,4" FontSize="11"/>
+               <Button Content="🔄 Refresh" Command="{Binding RefreshPenDriveFilesCommand}" Style="{StaticResource GlassSecondaryButton}" Margin="0,0,6,0" Padding="8,4" FontSize="11"/>
+               <Button Content="📥 Downloads Folder" Command="{Binding OpenDownloadsFolderCommand}" Style="{StaticResource GlassSecondaryButton}" Margin="0,0,6,0" Padding="8,4" FontSize="11"/>
+               <Button Content="📁 Windows Explorer" Command="{Binding OpenPenDriveInExplorerCommand}" Style="{StaticResource GlassSecondaryButton}" Padding="8,4" FontSize="11"/>
+              </StackPanel>
+              <TextBlock Text="{Binding PenDriveCurrentPath}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center"/>
+             </DockPanel>
+            </Border>
+
+            <!-- Files List -->
+            <ItemsControl ItemsSource="{Binding PenDriveClientFiles}">
+             <ItemsControl.ItemTemplate>
+              <DataTemplate>
+               <Border BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1" Padding="0,6">
+                <DockPanel>
+                 <Button DockPanel.Dock="Right" Content="{Binding ActionLabel}" Command="{Binding DataContext.DownloadPenDriveFileCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Style="{StaticResource GlassSecondaryButton}" Padding="10,4" FontSize="11"/>
+                 <TextBlock Text="{Binding TypeIcon}" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                 <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                 <TextBlock Text="{Binding FormattedSize}" Foreground="{DynamicResource MutedBrush}" FontSize="11" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                 <TextBlock Text="{Binding FormattedDate}" Foreground="{DynamicResource MutedBrush}" FontSize="11" VerticalAlignment="Center"/>
+                </DockPanel>
+               </Border>
+              </DataTemplate>
+             </ItemsControl.ItemTemplate>
+            </ItemsControl>
+           </StackPanel>
+          </Border>
+         </StackPanel>
+
+         <!-- SUB-TAB 3: USB PERIPHERALS TUNNEL (MODE C) -->
+         <StackPanel Visibility="{Binding UsbTabVisibility}">
+          <!-- Host Card -->
+          <Border Style="{StaticResource Card}" Padding="16" Margin="0,0,0,14">
+           <StackPanel>
+            <DockPanel Margin="0,0,0,10">
+             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+              <Button Content="Scan USB Devices" Command="{Binding RefreshUsbDevicesCommand}" Style="{StaticResource GlassSecondaryButton}" Margin="0,0,8,0" Padding="10,6"/>
+              <Button Content="Share Device" Command="{Binding ShareUsbDeviceCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0" Padding="12,6"/>
+              <Button Content="Unshare Device" Command="{Binding UnshareUsbDeviceCommand}" Style="{StaticResource SecondaryButton}" Padding="12,6"/>
+             </StackPanel>
+             <TextBlock Text="🔌 Share Local USB Peripherals (This PC)" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            </DockPanel>
+            <TextBlock Text="{Binding UsbSharingStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Select Connected USB Device to Share:" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+            <ComboBox ItemsSource="{Binding AvailableUsbDevices}" SelectedItem="{Binding SelectedUsbDevice}" DisplayMemberPath="DisplayText" Margin="0,0,0,10"/>
+           </StackPanel>
+          </Border>
+
+          <!-- Client Card -->
+          <Border Style="{StaticResource Card}" Padding="16">
+           <StackPanel>
+            <TextBlock Text="🔗 Attach Remote USB Peripheral to This PC" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <TextBlock Text="Make a USB peripheral plugged into another PC appear as directly plugged into this computer's virtual USB port." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,10"/>
+
+            <!-- LAN Discovery Bar -->
+            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="10,8" Margin="0,0,0,10">
+             <StackPanel>
+              <DockPanel>
+               <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Content="🔍 Scan LAN" Command="{Binding ScanHubsCommand}" Style="{StaticResource PrimaryButton}" Padding="10,4" Margin="0,0,6,0" FontSize="11"/>
+                <Button Content="This PC (127.0.0.1)" Command="{Binding AutoFillHostIpCommand}" CommandParameter="127.0.0.1" Style="{StaticResource GlassSecondaryButton}" Padding="8,4" FontSize="11"/>
+               </StackPanel>
+               <TextBlock Text="{Binding HubScanStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="11" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+              </DockPanel>
+              <ItemsControl ItemsSource="{Binding DiscoveredHubs}" Visibility="{Binding DiscoveredHubsVisibility}" Margin="0,6,0,0">
+               <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                 <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+               </ItemsControl.ItemsPanel>
+               <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                 <Button Content="{Binding DisplayText}" Command="{Binding DataContext.AutoFillHostIpCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Style="{StaticResource GlassSecondaryButton}" Padding="8,3" Margin="0,0,6,4" FontSize="11"/>
+                </DataTemplate>
+               </ItemsControl.ItemTemplate>
+              </ItemsControl>
+             </StackPanel>
+            </Border>
+
+            <Grid Margin="0,0,0,10">
+             <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="12"/>
+              <ColumnDefinition Width="120"/>
+              <ColumnDefinition Width="12"/>
+              <ColumnDefinition Width="Auto"/>
+             </Grid.ColumnDefinitions>
+             <StackPanel Grid.Column="0">
+              <TextBlock Text="Host PC IP Address" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+              <TextBox Text="{Binding UsbClientHostIp, UpdateSourceTrigger=PropertyChanged}"/>
+             </StackPanel>
+             <StackPanel Grid.Column="2">
+              <TextBlock Text="USB Bus ID (e.g. 1-1)" FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
+              <TextBox Text="{Binding UsbClientBusId, UpdateSourceTrigger=PropertyChanged}"/>
+             </StackPanel>
+             <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Bottom">
+              <Button Content="Attach to This PC" Command="{Binding AttachUsbDeviceCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,6,0" Padding="12,8"/>
+              <Button Content="Detach" Command="{Binding DetachUsbDeviceCommand}" Style="{StaticResource SecondaryButton}" Padding="10,8"/>
+             </StackPanel>
+            </Grid>
+
+            <TextBlock Text="{Binding UsbClientStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="12"/>
+           </StackPanel>
+          </Border>
+         </StackPanel>
+        </StackPanel>
+
+       <Border Style="{StaticResource Card}" Padding="16" Visibility="{Binding HistoryVisibility}"><StackPanel>
+        <DockPanel Margin="0,0,0,10">
+         <Button DockPanel.Dock="Right" Content="Clear" Command="{Binding ClearHistoryCommand}" Padding="10,5"/>
+         <TextBlock Text="Session history" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+        </DockPanel>
+        <TextBlock Text="No sessions yet." Foreground="{DynamicResource MutedBrush}" FontSize="12" Visibility="{Binding HistoryEmptyVisibility}"/>
+        <ItemsControl ItemsSource="{Binding HistoryEntries}" Visibility="{Binding HistoryListVisibility}">
+         <ItemsControl.ItemTemplate>
+          <DataTemplate>
+           <Border BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1" Padding="0,8">
+            <TextBlock Text="{Binding Summary}" Foreground="{DynamicResource MutedBrush}" FontSize="11" TextWrapping="Wrap"/>
+           </Border>
+          </DataTemplate>
+         </ItemsControl.ItemTemplate>
+        </ItemsControl>
+       </StackPanel></Border>
+
+       <Border Style="{StaticResource Card}" Padding="16" Visibility="{Binding SettingsVisibility}"><StackPanel>
+        <TextBlock Text="Appearance" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="{Binding ThemeStatusLabel}" Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,10"/>
+        <TextBlock Text="Same glass cards. Three colour modes." Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,0,0,8" TextWrapping="Wrap"/>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+         <Button Content="{Binding LightModeLabel}" Command="{Binding SetColorModeCommand}" CommandParameter="Light" Margin="0,0,8,0" Padding="12,6" Style="{StaticResource GlassSecondaryButton}"/>
+         <Button Content="{Binding DarkModeLabel}" Command="{Binding SetColorModeCommand}" CommandParameter="Dark" Margin="0,0,8,0" Padding="12,6" Style="{StaticResource GlassSecondaryButton}"/>
+         <Button Content="{Binding SciFiModeLabel}" Command="{Binding SetColorModeCommand}" CommandParameter="SciFi" Padding="12,6" Style="{StaticResource GlassSecondaryButton}"/>
+        </StackPanel>
+        <TextBlock Text="1 Light = warm product glass. 2 Dark = slate night. 3 Sci-Fi = bright ice hologram (not dark)." Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,0,0,0" TextWrapping="Wrap"/>
+
+        <Separator Margin="0,16"/>
+        <TextBlock Text="Share quality" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="Default Balanced is best for most Wi‑Fi. Performance = faster/lower detail. Quality = sharper/more data. (Free lab — all presets available.)" Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,8" TextWrapping="Wrap"/>
+        <StackPanel Orientation="Horizontal">
+         <Button Content="Performance" Command="{Binding SetQualityCommand}" CommandParameter="Performance" Margin="0,0,8,0" Padding="10,5"/>
+         <Button Content="Balanced ✓" Command="{Binding SetQualityCommand}" CommandParameter="Balanced" Margin="0,0,8,0" Padding="10,5"/>
+         <Button Content="Quality" Command="{Binding SetQualityCommand}" CommandParameter="Quality" Padding="10,5"/>
+        </StackPanel>
+        <TextBlock Text="{Binding QualityPresetLabel}" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,8,0,0"/>
+
+        <Separator Margin="0,16"/>
+        <TextBlock Text="Video / screen stream" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="{Binding StreamCodecHelp}" Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,8" TextWrapping="Wrap"/>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+         <Button Content="JPEG" Command="{Binding SetStreamCodecCommand}" CommandParameter="Jpeg" Margin="0,0,8,0" Padding="10,5"/>
+          <Button Content="H.264 (planned)" IsEnabled="False" Padding="10,5"/>
+        </StackPanel>
+        <TextBlock Text="{Binding StreamCodecStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,0,0,4" TextWrapping="Wrap"/>
+         <TextBlock Text="H.264 is disabled in this production lab build: H264Sharp 1.6.0 uses an older native ABI and cannot safely load patched OpenH264. JPEG is active on both PCs." Foreground="{DynamicResource MutedBrush}" FontSize="11" TextWrapping="Wrap"/>
+
+        <Separator Margin="0,16"/>
+        <TextBlock Text="Local preview" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="Optional capture check on this PC only." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,8"/>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+         <Button Content="Start preview" Command="{Binding StartLocalPreviewCommand}" IsEnabled="{Binding CanStartLocalPreview}" Margin="0,0,8,0" Padding="10,5"/>
+         <Button Content="Stop preview" Command="{Binding StopLocalPreviewCommand}" IsEnabled="{Binding CanStopLocalPreview}" Padding="10,5"/>
+        </StackPanel>
+        <TextBlock Text="{Binding LocalPreviewStatus}" Foreground="{DynamicResource MutedBrush}" FontSize="11"/>
+        <Border Background="{DynamicResource TheaterBrush}" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="1" CornerRadius="10" Margin="0,10,0,0" MinHeight="320" Height="380">
+         <Image Source="{Binding LocalPreviewImage}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+        </Border>
+
+        <Separator Margin="0,16"/>
+        <TextBlock Text="Session metrics (lab)" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="While Share or Connect is live, this PC writes 1 Hz samples: FPS, kbps, frames, memory, hang/lag flags. No PIN or screen content." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,8" TextWrapping="Wrap"/>
+        <TextBlock Text="{Binding MetricsStatusText}" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,0,0,8" TextWrapping="Wrap"/>
+        <TextBlock Text="{Binding MetricsFolderHint}" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,0,0,8" TextWrapping="Wrap"/>
+        <Button Content="Open metrics folder" Command="{Binding OpenMetricsFolderCommand}" Padding="10,5" HorizontalAlignment="Left"/>
+
+        <Separator Margin="0,16"/>
+        <TextBlock Text="Data on this PC" FontSize="15" FontWeight="SemiBold"/>
+        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+         <Button Content="Clear recent addresses" Command="{Binding ClearRecentHostsCommand}" Margin="0,0,8,0" Padding="10,5"/>
+         <Button Content="Clear history" Command="{Binding ClearHistoryCommand}" Padding="10,5"/>
+        </StackPanel>
+
+        <Separator Margin="0,16"/>
+        <TextBlock Text="Network" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="TCP 5720 over TLS. The app never changes firewall rules. On the host, run Allow-Firewall.bat as Administrator if needed." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,0" TextWrapping="Wrap"/>
+       </StackPanel></Border>
+
+       <Border Style="{StaticResource Card}" Padding="16" Visibility="{Binding HelpVisibility}"><StackPanel>
+        <TextBlock Text="Status" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="{Binding VersionLabel}" Foreground="{DynamicResource TextBrush}" FontSize="13" Margin="0,6,0,8"/>
+         <TextBlock Text="Attended same-LAN screen share over TLS 1.2/1.3 only — not internet relay. JPEG is the active Windows-to-Windows codec. Fingerprint + PIN + host Accept. Protocol revision 4. Lab toward production-like — not Store-signed until Gate B." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,12" TextWrapping="Wrap"/>
+        <TextBlock Text="Privacy (this PC)" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="Theme, recent addresses, and session history stay in LocalAppData. PIN and fingerprint are never saved there. Screen and input only go to the peer you approve over your LAN TLS session. No TKR Desk cloud account. Full policy: docs\PRIVACY.md in the project / Store listing URL when published." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,12" TextWrapping="Wrap"/>
+        <TextBlock Text="Security (pairing)" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="Always compare the host Fingerprint out of band (call/chat) before Connect. TLS encrypts the session; the 6-digit PIN is a short convenience proof bound to the host certificate — it is not a full PAKE. Wrong PIN is rate-limited; after repeated failures the host must Start sharing again. Do not treat PIN alone as proof against a same-Wi‑Fi attacker who can MITM if you skip the fingerprint check." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,12" TextWrapping="Wrap"/>
+        <TextBlock Text="One-PC lab check" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="You can open two TKR Desk windows on this PC. Share one monitor and view on the other. High dropped frames and lower FPS are normal when one CPU does both roles. For a fair feel test, use a second Windows PC later." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,12" TextWrapping="Wrap"/>
+        <TextBlock Text="Find on Wi‑Fi / Bluetooth" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="Start sharing advertises name+IP+port on Wi‑Fi (UDP find) and optionally Bluetooth LE — never PIN or fingerprint. Viewer Find nearby fills the address only; type secrets from the host Share panel (or scan QR). Video always uses Wi‑Fi TLS. Host Accept required." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,12" TextWrapping="Wrap"/>
+        <TextBlock Text="Phone QR" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="While sharing, a QR code encodes the same connect offer for TKR Desk Viewer (Android). Scan on the same Wi‑Fi; host Accept is still required. Video does not travel over Bluetooth or QR. Phone builds are JPEG-only." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,12" TextWrapping="Wrap"/>
+        <TextBlock Text="Distribution" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="Lab ZIP works without the Microsoft Store. An MSIX package can be prepared for Store sideload/submit (docs\RELEASE.md). Store approval for remote-control apps is not guaranteed. Website ZIP needs a paid OV cert to quiet SmartScreen." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,12" TextWrapping="Wrap"/>
+        <TextBlock Text="Lab quality gates" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="Physical two-PC checks and session metrics: docs\TESTING.md. Release order and blockers: STATE.json and docs\ROADMAP.md. Internet access remains a separate later product." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,12" TextWrapping="Wrap"/>
+        <TextBlock Text="Not included yet" FontSize="15" FontWeight="SemiBold"/>
+        <TextBlock Text="Microsoft Store live listing, Authenticode OV for website ZIP, full PAKE, clipboard sync, WebRTC / STUN / TURN internet relay, accounts or paid tiers. Do not claim internet remote until those ship." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,6,0,0" TextWrapping="Wrap"/>
+        <TextBlock Text="This app never changes firewall rules by itself. On the host, run Allow-Firewall.bat as Administrator only if Windows blocks TCP 5720." Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
+       </StackPanel></Border>
+      </StackPanel>
+     </ScrollViewer>
+    </Grid>
+
+    <Border Grid.Row="3" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,1,0,0" Padding="20,6"
+            Visibility="{Binding AppChromeVisibility}">
+     <TextBlock Text="{Binding FooterText}" FontSize="10" Foreground="{DynamicResource MutedBrush}"/>
+    </Border>
+   </Grid>
+  </Grid>
+ </Grid>
+</Window>

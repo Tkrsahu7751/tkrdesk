@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ApnaRemote.Viewer"
+             x:Class="ApnaRemote.Viewer.MainPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#070E18">
+
+  <ContentPage.BindingContext>
+    <local:ViewerPageModel />
+  </ContentPage.BindingContext>
+
+  <Grid>
+    <BoxView Color="#0B1C33" />
+    <BoxView Opacity="0.55">
+      <BoxView.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+          <GradientStop Color="#402A6FED" Offset="0" />
+          <GradientStop Color="#00070E18" Offset="0.55" />
+          <GradientStop Color="#3312365E" Offset="1" />
+        </LinearGradientBrush>
+      </BoxView.Background>
+    </BoxView>
+
+    <Grid Padding="20,28,20,20" RowDefinitions="Auto,*,Auto">
+
+      <VerticalStackLayout Spacing="4">
+        <Border Stroke="#33A5F3FC" StrokeThickness="1" BackgroundColor="#22FFFFFF"
+                Padding="10,4" HorizontalOptions="Start" StrokeShape="RoundRectangle 999">
+          <Label Text="LAN LAB" TextColor="#A5F3FC" FontSize="11" FontAttributes="Bold" />
+        </Border>
+        <Label Text="{Binding BrandTitle}" TextColor="White" FontSize="34" FontAttributes="Bold" Margin="0,10,0,0" />
+        <Label Text="{Binding BrandSub}" TextColor="#8FA3BF" FontSize="14" />
+        <Label Text="{Binding VersionLabel}" TextColor="#5A6B82" FontSize="11" Margin="0,2,0,0" />
+      </VerticalStackLayout>
+
+      <Border Grid.Row="1" Margin="0,18,0,12" IsVisible="{Binding ShowConnect}"
+              Stroke="#66A5F3FC" StrokeThickness="1" BackgroundColor="#28101828"
+              StrokeShape="RoundRectangle 18" Padding="20">
+        <ScrollView>
+          <VerticalStackLayout Spacing="12">
+            <Label Text="Connect" TextColor="White" FontSize="20" FontAttributes="Bold" />
+            <Label Text="Same Wi‑Fi as the PC. Host must Accept after you connect."
+                   TextColor="#8FA3BF" FontSize="13" LineBreakMode="WordWrap" />
+
+            <Button Text="Scan host QR" Command="{Binding ScanQrCommand}"
+                    BackgroundColor="#2F6FED" TextColor="White" FontAttributes="Bold"
+                    CornerRadius="10" HeightRequest="48" Margin="0,8,0,0" />
+
+            <Label Text="Or paste phone link" TextColor="#8FA3BF" FontSize="12" Margin="0,8,0,0" />
+            <Border Stroke="#44A5F3FC" StrokeThickness="1" BackgroundColor="#33040B14"
+                    StrokeShape="RoundRectangle 10" Padding="2">
+              <Entry Text="{Binding PasteUri}" Placeholder="apnaremote://v1?…"
+                     PlaceholderColor="#5A6B82" TextColor="White" BackgroundColor="Transparent" />
+            </Border>
+            <Button Text="Apply link" Command="{Binding ApplyUriCommand}"
+                    BackgroundColor="#1E3A5F" TextColor="White" CornerRadius="10" HeightRequest="42" />
+
+            <BoxView HeightRequest="1" Color="#33A5F3FC" Margin="0,8" />
+
+            <Label Text="Host address" TextColor="#8FA3BF" FontSize="12" />
+            <Border Stroke="#44A5F3FC" StrokeThickness="1" BackgroundColor="#33040B14"
+                    StrokeShape="RoundRectangle 10" Padding="2">
+              <Entry Text="{Binding Host}" Placeholder="192.168.x.x" PlaceholderColor="#5A6B82"
+                     TextColor="White" BackgroundColor="Transparent" Keyboard="Url" />
+            </Border>
+
+            <Grid ColumnDefinitions="110,*" ColumnSpacing="10">
+              <VerticalStackLayout>
+                <Label Text="PIN" TextColor="#8FA3BF" FontSize="12" />
+                <Border Stroke="#44A5F3FC" StrokeThickness="1" BackgroundColor="#33040B14"
+                        StrokeShape="RoundRectangle 10" Padding="2">
+                  <Entry Text="{Binding Pin}" Placeholder="6 digits" PlaceholderColor="#5A6B82"
+                         TextColor="White" BackgroundColor="Transparent" Keyboard="Numeric" MaxLength="6" FontSize="18" />
+                </Border>
+              </VerticalStackLayout>
+              <VerticalStackLayout Grid.Column="1">
+                <Label Text="Fingerprint" TextColor="#8FA3BF" FontSize="12" />
+                <Border Stroke="#44A5F3FC" StrokeThickness="1" BackgroundColor="#33040B14"
+                        StrokeShape="RoundRectangle 10" Padding="2">
+                  <Entry Text="{Binding Fingerprint}" Placeholder="XXXX-XXXX-XXXX-XXXX"
+                         PlaceholderColor="#5A6B82" TextColor="#0F9F6E" BackgroundColor="Transparent" FontSize="13" />
+                </Border>
+              </VerticalStackLayout>
+            </Grid>
+
+            <Label Text="Port" TextColor="#8FA3BF" FontSize="12" />
+            <Border Stroke="#44A5F3FC" StrokeThickness="1" BackgroundColor="#33040B14"
+                    WidthRequest="120" HorizontalOptions="Start"
+                    StrokeShape="RoundRectangle 10" Padding="2">
+              <Entry Text="{Binding Port}" Placeholder="5720" PlaceholderColor="#5A6B82"
+                     TextColor="White" BackgroundColor="Transparent" Keyboard="Numeric" />
+            </Border>
+
+            <Label Text="{Binding StatsText}" TextColor="#8FA3BF" FontSize="12" LineBreakMode="WordWrap" Margin="0,4,0,0" />
+          </VerticalStackLayout>
+        </ScrollView>
+      </Border>
+
+      <Grid Grid.Row="1" Margin="0,18,0,12" IsVisible="{Binding ShowSession}">
+        <Border Stroke="#66A5F3FC" StrokeThickness="1" BackgroundColor="#080B1220"
+                StrokeShape="RoundRectangle 18">
+          <Grid RowDefinitions="Auto,*,Auto">
+            <VerticalStackLayout Padding="16,14,16,8" Spacing="4">
+              <Label Text="{Binding PhaseLabel}" TextColor="#A6C4FF" FontSize="15" FontAttributes="Bold" />
+              <Label Text="{Binding SessionHint}" TextColor="#CAD7EB" FontSize="13" LineBreakMode="WordWrap" />
+            </VerticalStackLayout>
+
+            <Grid Grid.Row="1" BackgroundColor="#05070E18" MinimumHeightRequest="300">
+              <local:RemoteFrameView x:Name="FrameSurface"
+                                     FrameJpeg="{Binding FrameJpeg}"
+                                     FrameWidth="{Binding RemoteWidth}"
+                                     FrameHeight="{Binding RemoteHeight}"
+                                     InputEnabled="{Binding ControlEnabled}"
+                                     IsVisible="{Binding HasRemoteImage}"
+                                     HorizontalOptions="Fill" VerticalOptions="Fill" />
+              <VerticalStackLayout IsVisible="{Binding ShowWaiting}"
+                                   HorizontalOptions="Center" VerticalOptions="Center" Padding="24" Spacing="10">
+                <ActivityIndicator IsRunning="True" Color="#2F6FED" />
+                <Label Text="{Binding Status}" TextColor="#CAD7EB" FontSize="13" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+              </VerticalStackLayout>
+            </Grid>
+
+            <VerticalStackLayout Grid.Row="2" Padding="12,8,12,10" Spacing="8">
+              <Label Text="{Binding StatsText}" TextColor="#8FA3BF" FontSize="11" />
+              <HorizontalStackLayout Spacing="8" IsVisible="{Binding ControlEnabled}">
+                <Button Text="Keyboard" Command="{Binding ToggleKeyboardCommand}"
+                        BackgroundColor="#1E3A5F" TextColor="White" CornerRadius="8" HeightRequest="40" Padding="14,0" />
+              </HorizontalStackLayout>
+              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding KeyboardVisible}">
+                <Border Stroke="#44A5F3FC" StrokeThickness="1" BackgroundColor="#33040B14"
+                        StrokeShape="RoundRectangle 10" Padding="2">
+                  <Entry Text="{Binding KeyboardText}" Placeholder="Type to send…"
+                         PlaceholderColor="#5A6B82" TextColor="White" BackgroundColor="Transparent"
+                         ReturnCommand="{Binding SendKeyboardCommand}" />
+                </Border>
+                <Button Grid.Column="1" Text="Send" Command="{Binding SendKeyboardCommand}"
+                        BackgroundColor="#2F6FED" TextColor="White" CornerRadius="8" HeightRequest="40" Padding="16,0" />
+              </Grid>
+            </VerticalStackLayout>
+          </Grid>
+        </Border>
+      </Grid>
+
+      <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
+        <Button Text="Connect" Command="{Binding ConnectCommand}"
+                BackgroundColor="#2F6FED" TextColor="White" FontAttributes="Bold"
+                CornerRadius="12" HeightRequest="52" />
+        <Button Grid.Column="1" Text="End" Command="{Binding DisconnectCommand}"
+                BackgroundColor="#1E3A5F" TextColor="White"
+                CornerRadius="12" HeightRequest="52" />
+      </Grid>
+    </Grid>
+  </Grid>
+</ContentPage>

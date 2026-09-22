@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>ApnaRemote.Protocol</RootNamespace>
+    <Description>ARL1 framing and TLS PIN/fingerprint helpers shared by Windows host and multi-platform viewers.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../ApnaRemote.Core/ApnaRemote.Core.csproj" />
+  </ItemGroup>
+</Project>

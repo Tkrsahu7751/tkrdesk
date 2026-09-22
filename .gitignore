@@ -1,0 +1,24 @@
+# Native build intermediates and local developer tools; source remains tracked.
+native/**/bin/
+native/**/obj/
+.toolchain/
+.dotnet-home/
+.nuget-packages/
+.vs/
+*.user
+*.suo
+
+# Local deliverables are declared in STATE.json and reproduced by publish scripts.
+dist/
+
+# Temporary/editor output.
+*.log
+*.tmp
+*.bak
+Thumbs.db
+.DS_Store
+.cleanup-backup/
+
+# Local MSIX sideload certs (never commit).
+*.pfx
+*.p12

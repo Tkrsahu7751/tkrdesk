@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- Windows OS TFM enables official WinRT projections (Windows.Graphics.Capture). -->
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>TKRDesk</AssemblyName>
+    <ApplicationTitle>TKR Desk</ApplicationTitle>
+    <Product>TKR Desk</Product>
+    <Description>TKR Desk — Remote Desktop, Virtual Printer Spooler &amp; Wi-Fi Hub</Description>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\tkrdesk.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../ApnaRemote.Core/ApnaRemote.Core.csproj" />
+    <ProjectReference Include="../ApnaRemote.Protocol/ApnaRemote.Protocol.csproj" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+    <Resource Include="Assets\tkrdesk-icon.png" />
+    <Resource Include="Assets\tkrdesk.ico" />
+    <Resource Include="Assets\apna-remote-icon.png" />
+    <Resource Include="Assets\apna-remote.ico" />
+  </ItemGroup>
+
+  <!-- H264Sharp 1.6.0 ships vulnerable ABI-7 OpenH264 2.4.1. Cisco 2.6.0 is ABI 8
+       and crashes that wrapper, so production builds are JPEG-only until the wrapper is rebuilt. -->
+  <Target Name="RemoveUnsupportedOpenH264FromBuild" AfterTargets="Build">
+    <ItemGroup>
+      <UnsupportedOpenH264Files Include="$(TargetDir)**\openh264-2.4.1-win64.dll;$(TargetDir)**\openh264-2.6.0-win64.dll;$(TargetDir)**\H264SharpNative-win64.dll;$(TargetDir)**\H264Sharp.dll" />
+    </ItemGroup>
+    <Delete Files="@(UnsupportedOpenH264Files)" />
+    <Error Condition="Exists('$(TargetDir)openh264-2.4.1-win64.dll')"
+           Text="Security check failed: vulnerable OpenH264 2.4.1 remains in build output." />
+    <Error Condition="Exists('$(TargetDir)openh264-2.6.0-win64.dll') Or Exists('$(TargetDir)H264SharpNative-win64.dll') Or Exists('$(TargetDir)H264Sharp.dll')"
+           Text="Security check failed: unsupported H264Sharp/OpenH264 files remain in build output." />
+  </Target>
+
+  <Target Name="RemoveUnsupportedOpenH264FromPublish" AfterTargets="Publish">
+    <ItemGroup>
+      <UnsupportedOpenH264Files Include="$(PublishDir)**\openh264-2.4.1-win64.dll;$(PublishDir)**\openh264-2.6.0-win64.dll;$(PublishDir)**\H264SharpNative-win64.dll;$(PublishDir)**\H264Sharp.dll" />
+    </ItemGroup>
+    <Delete Files="@(UnsupportedOpenH264Files)" />
+    <Error Condition="Exists('$(PublishDir)openh264-2.4.1-win64.dll')"
+           Text="Security check failed: vulnerable OpenH264 2.4.1 remains in publish output." />
+    <Error Condition="Exists('$(PublishDir)openh264-2.6.0-win64.dll') Or Exists('$(PublishDir)H264SharpNative-win64.dll') Or Exists('$(PublishDir)H264Sharp.dll')"
+           Text="Security check failed: unsupported H264Sharp/OpenH264 files remain in publish output." />
+  </Target>
+</Project>

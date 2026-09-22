@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  IgnorableNamespaces="uap uap10 rescap desktop">
+
+  <!--
+    Temporary identity for local sideload ONLY.
+    Gate B before Store upload:
+      1) Partner Center → Product → Package identity
+      2) Replace Name + Publisher below with those exact values
+      3) Bump Version for every Store submission (x.y.z.0)
+    Never invent a CN= that does not match Partner Center.
+  -->
+  <Identity
+    Name="ApnaRemote.Lab"
+    Publisher="CN=Apna Remote Lab"
+    Version="0.20.6.0"
+    ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>Apna Remote</DisplayName>
+    <PublisherDisplayName>Apna Remote Lab</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <Description>Attended same-Wi-Fi remote desktop for Windows (LAN lab; not internet relay).</Description>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application Id="ApnaRemote"
+                 Executable="ApnaRemote.exe"
+                 EntryPoint="Windows.FullTrustApplication"
+                 uap10:TrustLevel="mediumIL"
+                 uap10:RuntimeBehavior="packagedClassicApp">
+      <uap:VisualElements
+        DisplayName="Apna Remote"
+        Description="Attended same-LAN remote desktop with host consent."
+        BackgroundColor="#2563EB"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="Apna Remote">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#0F1A2C" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <Capability Name="privateNetworkClientServer" />
+    <Capability Name="internetClient" />
+    <DeviceCapability Name="bluetooth" />
+  </Capabilities>
+</Package>
